@@ -1,0 +1,354 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Meeting Planner Assistant",
+    "description": "Toplantı planlama ve katılımcı uygunluk kontrolü için API",
+    "version": "1.0.0"
+  },
+  "host": "YOUR_API_URL",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/find-meeting-times": {
+      "post": {
+        "summary": "Uygun toplantı zamanlarını bul",
+        "description": "Katılımcıların uygun olduğu en iyi toplantı zamanlarını bulur",
+        "operationId": "FindMeetingTimes",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "startDate": {
+                  "type": "string",
+                  "description": "Başlangıç tarihi (YYYY-MM-DD)",
+                  "title": "Başlangıç Tarihi",
+                  "x-ms-summary": "Başlangıç Tarihi"
+                },
+                "endDate": {
+                  "type": "string",
+                  "description": "Bitiş tarihi (YYYY-MM-DD)",
+                  "title": "Bitiş Tarihi",
+                  "x-ms-summary": "Bitiş Tarihi"
+                },
+                "timeRange": {
+                  "type": "string",
+                  "description": "Saat aralığı (HH:MM-HH:MM)",
+                  "title": "Saat Aralığı",
+                  "x-ms-summary": "Saat Aralığı",
+                  "default": "09:00-17:00"
+                },
+                "participants": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Katılımcı e-posta adresleri",
+                  "title": "Katılımcılar",
+                  "x-ms-summary": "Katılımcılar"
+                },
+                "duration": {
+                  "type": "integer",
+                  "description": "Toplantı süresi (dakika)",
+                  "title": "Süre",
+                  "x-ms-summary": "Süre",
+                  "default": 60
+                }
+              },
+              "required": [
+                "startDate",
+                "endDate",
+                "timeRange",
+                "participants"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Başarılı",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "İşlem başarılı mı"
+                },
+                "suggestions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "start_time": {
+                        "type": "string",
+                        "description": "Başlangıç zamanı"
+                      },
+                      "end_time": {
+                        "type": "string",
+                        "description": "Bitiş zamanı"
+                      },
+                      "available_count": {
+                        "type": "integer",
+                        "description": "Uygun katılımcı sayısı"
+                      },
+                      "total_participants": {
+                        "type": "integer",
+                        "description": "Toplam katılımcı sayısı"
+                      },
+                      "availability_percentage": {
+                        "type": "number",
+                        "description": "Uygunluk yüzdesi"
+                      },
+                      "formatted": {
+                        "type": "string",
+                        "description": "Formatlanmış öneri metni"
+                      },
+                      "available_participants": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "busy_participants": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "total_slots_analyzed": {
+                  "type": "integer",
+                  "description": "Analiz edilen toplam zaman dilimi"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/create-meeting": {
+      "post": {
+        "summary": "Teams toplantısı oluştur",
+        "description": "Seçilen zaman için Teams toplantısı oluşturur",
+        "operationId": "CreateMeeting",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "subject": {
+                  "type": "string",
+                  "description": "Toplantı konusu",
+                  "title": "Konu",
+                  "x-ms-summary": "Konu"
+                },
+                "startTime": {
+                  "type": "string",
+                  "description": "Başlangıç zamanı (ISO 8601)",
+                  "title": "Başlangıç Zamanı",
+                  "x-ms-summary": "Başlangıç Zamanı"
+                },
+                "endTime": {
+                  "type": "string",
+                  "description": "Bitiş zamanı (ISO 8601)",
+                  "title": "Bitiş Zamanı",
+                  "x-ms-summary": "Bitiş Zamanı"
+                },
+                "attendees": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Katılımcı e-posta adresleri",
+                  "title": "Katılımcılar",
+                  "x-ms-summary": "Katılımcılar"
+                },
+                "body": {
+                  "type": "string",
+                  "description": "Toplantı açıklaması",
+                  "title": "Açıklama",
+                  "x-ms-summary": "Açıklama"
+                }
+              },
+              "required": [
+                "subject",
+                "startTime",
+                "endTime",
+                "attendees"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Başarılı",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "description": "İşlem başarılı mı"
+                },
+                "meeting": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Toplantı ID"
+                    },
+                    "webLink": {
+                      "type": "string",
+                      "description": "Web linki"
+                    },
+                    "onlineMeeting": {
+                      "type": "object",
+                      "properties": {
+                        "joinUrl": {
+                          "type": "string",
+                          "description": "Teams katılım linki"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/check-availability": {
+      "post": {
+        "summary": "Uygunluk kontrolü",
+        "description": "Belirli bir zaman dilimi için katılımcı uygunluğunu kontrol eder",
+        "operationId": "CheckAvailability",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "participants": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Katılımcı e-posta adresleri",
+                  "title": "Katılımcılar",
+                  "x-ms-summary": "Katılımcılar"
+                },
+                "startTime": {
+                  "type": "string",
+                  "description": "Başlangıç zamanı (ISO 8601)",
+                  "title": "Başlangıç Zamanı",
+                  "x-ms-summary": "Başlangıç Zamanı"
+                },
+                "endTime": {
+                  "type": "string",
+                  "description": "Bitiş zamanı (ISO 8601)",
+                  "title": "Bitiş Zamanı",
+                  "x-ms-summary": "Bitiş Zamanı"
+                }
+              },
+              "required": [
+                "participants",
+                "startTime",
+                "endTime"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Başarılı",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "availability": {
+                  "type": "object",
+                  "properties": {
+                    "available_count": {
+                      "type": "integer"
+                    },
+                    "total_participants": {
+                      "type": "integer"
+                    },
+                    "availability_percentage": {
+                      "type": "number"
+                    },
+                    "available_participants": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "busy_participants": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Sağlık kontrolü",
+        "description": "API'nin çalışıp çalışmadığını kontrol eder",
+        "operationId": "HealthCheck",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Başarılı",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "service": {
+                  "type": "string"
+                },
+                "timestamp": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {},
+  "parameters": {},
+  "responses": {},
+  "securityDefinitions": {},
+  "security": [],
+  "tags": []
+}

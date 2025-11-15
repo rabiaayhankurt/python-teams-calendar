@@ -1,0 +1,484 @@
+{
+  "info": {
+    "name": "Meeting Planner Assistant API",
+    "description": "Toplantı planlama ve katılımcı uygunluk kontrolü için Microsoft Graph API tabanlı servis.\n\n**Mock Mode**: Graph API erişimi olmadan test edebilirsiniz.\n**Production Mode**: Gerçek Microsoft Graph API ile çalışır.\n\nAPI Dokümantasyonu: README.md",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "meeting-planner-assistant"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "string",
+      "description": "API Key (opsiyonel - güvenlik eklerseniz kullanın)"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Status",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "API'nin çalışıp çalışmadığını ve hangi modda olduğunu (MOCK/PRODUCTION) kontrol eder."
+          },
+          "response": [
+            {
+              "name": "Success - Mock Mode",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/health",
+                  "host": ["{{base_url}}"],
+                  "path": ["health"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"status\": \"healthy\",\n    \"service\": \"Meeting Planner Assistant\",\n    \"mode\": \"MOCK\",\n    \"timestamp\": \"2025-11-15T19:41:28.876482\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Meeting Times",
+      "item": [
+        {
+          "name": "Find Meeting Times",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text",
+                "disabled": true,
+                "description": "API Key eklediyseniz enable edin"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2025-11-18\",\n  \"endDate\": \"2025-11-22\",\n  \"timeRange\": \"09:00-17:00\",\n  \"participants\": [\n    \"user1@example.com\",\n    \"user2@example.com\",\n    \"user3@example.com\"\n  ],\n  \"duration\": 60\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/find-meeting-times",
+              "host": ["{{base_url}}"],
+              "path": ["api", "find-meeting-times"]
+            },
+            "description": "Belirtilen tarih ve saat aralığında katılımcıların uygun olduğu en iyi toplantı zamanlarını bulur.\n\n**Parametreler:**\n- `startDate`: Başlangıç tarihi (YYYY-MM-DD)\n- `endDate`: Bitiş tarihi (YYYY-MM-DD)\n- `timeRange`: Saat aralığı (HH:MM-HH:MM)\n- `participants`: E-posta adresleri listesi\n- `duration`: Toplantı süresi (dakika, opsiyonel, varsayılan: 60)"
+          },
+          "response": [
+            {
+              "name": "Success - With Suggestions",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"startDate\": \"2025-11-18\",\n  \"endDate\": \"2025-11-22\",\n  \"timeRange\": \"09:00-17:00\",\n  \"participants\": [\"user1@example.com\", \"user2@example.com\"],\n  \"duration\": 60\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/find-meeting-times",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "find-meeting-times"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"suggestions\": [\n        {\n            \"start_time\": \"2025-11-19T10:00:00+03:00\",\n            \"end_time\": \"2025-11-19T11:00:00+03:00\",\n            \"available_count\": 2,\n            \"total_participants\": 2,\n            \"availability_percentage\": 100.0,\n            \"available_participants\": [\n                \"user1@example.com\",\n                \"user2@example.com\"\n            ],\n            \"busy_participants\": [],\n            \"formatted\": \"19 Kasım 2025, 10:00 - 11:00 (2/2 katılımcı uygun, %100)\"\n        },\n        {\n            \"start_time\": \"2025-11-19T14:00:00+03:00\",\n            \"end_time\": \"2025-11-19T15:00:00+03:00\",\n            \"available_count\": 2,\n            \"total_participants\": 2,\n            \"availability_percentage\": 100.0,\n            \"available_participants\": [\n                \"user1@example.com\",\n                \"user2@example.com\"\n            ],\n            \"busy_participants\": [],\n            \"formatted\": \"19 Kasım 2025, 14:00 - 15:00 (2/2 katılımcı uygun, %100)\"\n        }\n    ],\n    \"total_slots_analyzed\": 48\n}"
+            },
+            {
+              "name": "Error - Missing Required Field",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"startDate\": \"2025-11-18\",\n  \"timeRange\": \"09:00-17:00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/find-meeting-times",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "find-meeting-times"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": false,\n    \"error\": \"Missing required field: endDate\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Find Meeting Times - Next Week",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"{{$randomDateFuture}}\",\n  \"endDate\": \"{{$randomDateFuture}}\",\n  \"timeRange\": \"09:00-17:00\",\n  \"participants\": [\n    \"manager@company.com\",\n    \"team1@company.com\",\n    \"team2@company.com\",\n    \"team3@company.com\"\n  ],\n  \"duration\": 90\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/find-meeting-times",
+              "host": ["{{base_url}}"],
+              "path": ["api", "find-meeting-times"]
+            },
+            "description": "4 kişilik ekip için 90 dakikalık toplantı zamanı bulur."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Meeting Management",
+      "item": [
+        {
+          "name": "Create Meeting",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Proje Değerlendirme Toplantısı\",\n  \"startTime\": \"2025-11-19T10:00:00\",\n  \"endTime\": \"2025-11-19T11:00:00\",\n  \"attendees\": [\n    \"user1@example.com\",\n    \"user2@example.com\"\n  ],\n  \"body\": \"Bu toplantıda proje ilerlemesini değerlendirecek ve sonraki adımları belirleyeceğiz.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/create-meeting",
+              "host": ["{{base_url}}"],
+              "path": ["api", "create-meeting"]
+            },
+            "description": "Teams toplantısı oluşturur ve katılımcılara davetiye gönderir.\n\n**Parametreler:**\n- `subject`: Toplantı konusu\n- `startTime`: Başlangıç zamanı (ISO 8601)\n- `endTime`: Bitiş zamanı (ISO 8601)\n- `attendees`: Katılımcı e-posta listesi\n- `body`: Toplantı açıklaması (opsiyonel)"
+          },
+          "response": [
+            {
+              "name": "Success - Meeting Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"subject\": \"Test Toplantısı\",\n  \"startTime\": \"2025-11-19T10:00:00\",\n  \"endTime\": \"2025-11-19T11:00:00\",\n  \"attendees\": [\"user1@example.com\"],\n  \"body\": \"Test toplantısı açıklaması\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/create-meeting",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "create-meeting"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"meeting\": {\n        \"id\": \"MOCK_EVENT_123456\",\n        \"webLink\": \"https://outlook.office365.com/calendar/item/mock/MOCK_EVENT_123456\",\n        \"onlineMeeting\": {\n            \"joinUrl\": \"https://teams.microsoft.com/l/meetup-join/mock/MOCK_MEETING_789012\"\n        },\n        \"subject\": \"Test Toplantısı\",\n        \"start\": {\n            \"dateTime\": \"2025-11-19T10:00:00\",\n            \"timeZone\": \"Europe/Istanbul\"\n        },\n        \"end\": {\n            \"dateTime\": \"2025-11-19T11:00:00\",\n            \"timeZone\": \"Europe/Istanbul\"\n        }\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Meeting - Sprint Planning",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Sprint Planning - Sprint 15\",\n  \"startTime\": \"2025-11-20T09:00:00\",\n  \"endTime\": \"2025-11-20T11:00:00\",\n  \"attendees\": [\n    \"scrum-master@company.com\",\n    \"developer1@company.com\",\n    \"developer2@company.com\",\n    \"qa@company.com\"\n  ],\n  \"body\": \"Sprint 15 için planlama toplantısı. User story'leri gözden geçirip sprint backlog'u oluşturacağız.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/create-meeting",
+              "host": ["{{base_url}}"],
+              "path": ["api", "create-meeting"]
+            },
+            "description": "2 saatlik sprint planning toplantısı örneği."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Availability Check",
+      "item": [
+        {
+          "name": "Check Availability",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participants\": [\n    \"user1@example.com\",\n    \"user2@example.com\"\n  ],\n  \"startTime\": \"2025-11-19T10:00:00\",\n  \"endTime\": \"2025-11-19T11:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/check-availability",
+              "host": ["{{base_url}}"],
+              "path": ["api", "check-availability"]
+            },
+            "description": "Belirli bir zaman dilimi için katılımcıların uygunluk durumunu kontrol eder.\n\n**Parametreler:**\n- `participants`: E-posta adresleri listesi\n- `startTime`: Başlangıç zamanı (ISO 8601)\n- `endTime`: Bitiş zamanı (ISO 8601)"
+          },
+          "response": [
+            {
+              "name": "Success - All Available",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participants\": [\"user1@example.com\", \"user2@example.com\"],\n  \"startTime\": \"2025-11-19T10:00:00\",\n  \"endTime\": \"2025-11-19T11:00:00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/check-availability",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "check-availability"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"availability\": {\n        \"available_count\": 2,\n        \"total_participants\": 2,\n        \"availability_percentage\": 100.0,\n        \"available_participants\": [\n            \"user1@example.com\",\n            \"user2@example.com\"\n        ],\n        \"busy_participants\": []\n    }\n}"
+            },
+            {
+              "name": "Success - Partial Availability",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"participants\": [\"user1@example.com\", \"user2@example.com\", \"user3@example.com\"],\n  \"startTime\": \"2025-11-19T14:00:00\",\n  \"endTime\": \"2025-11-19T15:00:00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/check-availability",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "check-availability"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"availability\": {\n        \"available_count\": 2,\n        \"total_participants\": 3,\n        \"availability_percentage\": 66.7,\n        \"available_participants\": [\n            \"user1@example.com\",\n            \"user2@example.com\"\n        ],\n        \"busy_participants\": [\n            \"user3@example.com\"\n        ]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Check Availability - Large Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"participants\": [\n    \"manager@company.com\",\n    \"dev1@company.com\",\n    \"dev2@company.com\",\n    \"dev3@company.com\",\n    \"designer@company.com\",\n    \"qa@company.com\"\n  ],\n  \"startTime\": \"2025-11-21T15:00:00\",\n  \"endTime\": \"2025-11-21T16:30:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/check-availability",
+              "host": ["{{base_url}}"],
+              "path": ["api", "check-availability"]
+            },
+            "description": "6 kişilik ekip için uygunluk kontrolü."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-generate future dates for testing",
+          "const today = new Date();",
+          "const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);",
+          "pm.variables.set('next_week', nextWeek.toISOString().split('T')[0]);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-validation for successful responses",
+          "if (pm.response.code === 200) {",
+          "    pm.test('Status is 200 OK', function () {",
+          "        pm.response.to.have.status(200);",
+          "    });",
+          "    ",
+          "    const jsonData = pm.response.json();",
+          "    ",
+          "    pm.test('Response has success field', function () {",
+          "        pm.expect(jsonData).to.have.property('success');",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ]
+}
