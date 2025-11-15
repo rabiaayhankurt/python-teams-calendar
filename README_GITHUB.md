@@ -22,8 +22,8 @@ Toplantı planlama ve katılımcı uygunluk kontrolü için Microsoft Graph API 
 
 ```bash
 # Clone repository
-git clone https://github.com/YOUR_USERNAME/meeting-planner-assistant.git
-cd meeting-planner-assistant
+git clone https://github.com/rabiaayhankurt/python-teams-calendar.git
+cd python-teams-calendar
 
 # Create virtual environment
 python -m venv venv
@@ -49,7 +49,7 @@ docker run -p 5000:5000 --env-file .env meeting-planner-api
 
 ### Azure Deployment
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FYOUR_USERNAME%2Fmeeting-planner-assistant%2Fmain%2Fazuredeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Frabiaayhankurt%2Fpython-teams-calendar%2Fmain%2Fazuredeploy.json)
 
 ## 📖 Documentation
 
